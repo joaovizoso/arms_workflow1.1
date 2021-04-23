@@ -1,9 +1,8 @@
-# workflow1.0
+# workflow1.1
 
-1. Save TIFF files in `docs/` folder
-2. Activate virtual environment and install requiements
-3. `$ cd exec/`
-2. `$ python workflow.py`
+1. Activate virtual environment and install requiements
+2. `$ cd exec/`
+3. `$ python workflow.py inputFile.tiff`
 
 # Pre-requirements
 
