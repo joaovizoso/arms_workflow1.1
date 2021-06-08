@@ -8,16 +8,21 @@ import docManager
 import json
 
 #coords = [x,y,w,h]
+TESSDATA_PATH = str(Path.cwd().parents[0]/'tessdata')
 
-def define_regions(image):
+def define_regions(image,langs):
 
 	regions = []
 	
 	img = Image.open(image)
+
+	lang = docManager.parse_langs(langs)
 	
-	with tr.PyTessBaseAPI() as api:
+	with tr.PyTessBaseAPI(path=TESSDATA_PATH, lang=lang) as api:
 		api.SetImage(img)
+		hocr_file = api.GetHOCRText(0)
 		boxes = api.GetComponentImages(tr.RIL.TEXTLINE,True)
+		
 		i = 1
 		for (_,box,_,_) in boxes:
 
@@ -33,7 +38,7 @@ def define_regions(image):
 			i+=1
 			regions.append(region)
 
-	return regions
+	return hocr_file, regions
 
 
 def get_coords(regions):
@@ -54,18 +59,25 @@ def crop(coords,image):
 	return crop_img
 
 
-def save(name):
+
+def save(name,lang,tmp):
 	path = Path.cwd()/"tmp"/name/"regions"
 	path2 = Path.cwd()/"tmp"/name/"pages"
 	blocks = []
+	pages_left = docManager.get_field(name,'segment')
 
-	for image in path.glob("*.tiff"):
 
-		regions = define_regions(str(image))
+	for i in range(pages_left,0,-1):
+		image = path/"page_{}.tiff".format(i)
+		hocr_file, regions = define_regions(str(image),lang)
+		hocr_filename = path2/str(image.stem+".hocr")
 		block = {}
 		block['image'] = str(image.parts[-1])
 		block['regions'] = regions
 		blocks.append(block)
+
+		with open(str(hocr_filename),"w") as f:  
+			f.write(str(hocr_file))
 
 		for region in regions:
 			filename = path/str(image.stem + '_%s.tiff'%(regions.index(region)+1))
@@ -74,13 +86,17 @@ def save(name):
 			result = crop(region['coords'],str(image))
 			cv2.imwrite(str(filename),result)
 
-		image.unlink()
+		if not tmp:
+			
+			image.unlink()
 
 	with open(path/'regions.JSON','w') as file:
 		json.dump(blocks,file)
 
-	docManager.update_field(name,'segment',0)
+	docManager.update_field(name,'segment',(i-1))
 	
 	return blocks
 
+		
 
+	

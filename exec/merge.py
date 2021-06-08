@@ -149,7 +149,7 @@ CMGjwvxTsr74/f/F95m3TH9x8o0/TU//N+7/D/ScVcA=
     pdfmetrics.registerFont(TTFont('invisible', ttf))
 
 
-def merge(name):
+def merge(name,tmp):
     
     folderManager.create_RESULT(name)
     filename = name+'.pdf'
@@ -159,7 +159,10 @@ def merge(name):
 
     export_pdf(path,200,str(path2))
 
-    docManager.update_field(name,'merge',0)
-    #docManager.is_finished(name)
+    
+    if not tmp:
+        #folderManager.delete_REG_TMP(name)
+        folderManager.delete_IMG_TMP(name)
+        #folderManager.delete_TMP(name)
 
 

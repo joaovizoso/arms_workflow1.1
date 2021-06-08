@@ -25,9 +25,9 @@ def make_doc(path):
 	file = {}
 	doc={}
 	doc['split'] = pages_left
-	doc['preprocess'] = 1
-	doc['segment'] = 1
-	doc['ocr'] = 1
+	doc['preprocess'] = pages_left
+	doc['segment'] = pages_left
+	doc['ocr'] = pages_left
 	doc['compare'] = 1
 	doc['merge'] = 1
 	file['name'] = path.parts[-1]
@@ -88,3 +88,20 @@ def is_finished(name):
 	source = Path(data['path'])
 	destination = Path.cwd().parents[0]/"results"/name/name
 	shutil.move(source,destination)
+
+
+def parse_langs(langs):
+	result = ""
+	if isinstance(langs,tuple):
+		for i in range(len(langs)):
+			if i == 0:
+				result = langs[i]
+			else:
+				result = result + "+" + langs[i]
+	else:
+		result = langs
+
+	return result
+
+
+

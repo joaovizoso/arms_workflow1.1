@@ -14,14 +14,6 @@ def create_TMP(name):
 		Path(folder).mkdir()
 
 
-def create_OCR_TMP(name):
-
-	current = Path.cwd()
-	folder = current/"tmp"/name/"ocr"
-	if not Path(folder).exists():
-		Path(folder).mkdir()
-
-
 def create_PAGES_TMP(name):
 
 	current = Path.cwd()
@@ -46,34 +38,41 @@ def create_RESULT(name):
 		Path(folder).mkdir()
 
 
+def create_CORRECTION(name): 
+
+	current = Path.cwd()
+	folder = current/"tmp"/name/"correction"
+	if not Path(folder).exists():
+		Path(folder).mkdir()
+
+
 def delete_TMP(name):
 
 	current = Path.cwd()
 	folder = current/"tmp"/name
-	folder.rmdir()
-
-
-def delete_OCR_TMP(name):
-
-	current = Path.cwd()
-	folder = current/"tmp"/name/"ocr"
-	for f in folder.glob("*.pdf"):
+	for f in folder.glob(".JSON"):
 		f.unlink()
 	folder.rmdir()
-	
 
-#Verificar se não é necessário apagar ficheiros das pastas
 
 def delete_REG_TMP(name):
 
 	current = Path.cwd()
 	folder = current/"tmp"/name/"regions"
+	for f in folder.glob("*.JSON"):
+		f.unlink()
 	folder.rmdir()
 
 def delete_IMG_TMP(name):
 
 	current = Path.cwd()
 	folder = current/"tmp"/name/"pages"
+	for f in folder.glob("*.tiff"):
+		f.unlink()
+
+	for h in folder.glob("*.hocr"):
+		h.unlink()
+	
 	folder.rmdir()
 
 
