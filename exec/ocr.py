@@ -14,15 +14,12 @@ def ocr(name,langs):
 
 	for i in range(pages_left,0,-1):
 		page = "page_{}.tiff".format(i)
-		print(page)
 		for elem in regions:
 			if elem['image'] == page:
 				nr_regions = len(elem['regions'])
-				print(nr_regions)
 
 		for h in range(nr_regions,0,-1):
 			image = path/"page_{}_{}.tiff".format(i,h)
-			print(image)
 			img = Image.open(image)	
 			with tr.PyTessBaseAPI(path=TESSDATA_PATH, lang=lang, psm=tr.PSM.SINGLE_LINE) as api:
 				api.SetImage(img)
